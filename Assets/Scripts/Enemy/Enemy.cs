@@ -46,10 +46,7 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
-        Destroy_ParticleSystem.Stop();
-        MuzzelFlash_ParticleSystem.Stop();
-        BulletShells_ParticleSystem.Stop();
-        Traser_ParticleSystem.Stop();
+        CeaseFire();
     }
 
     public void Initialize()
@@ -104,10 +101,17 @@ public class Enemy : MonoBehaviour
         HP = HP - damage;
         if (HP <= 0)
         {
-            OnDestroyEnemy?.Invoke();      // 코드 상에서 이벤트
+            OnDestroyEnemy?.Invoke();
             gameObject.SetActive(false);
             Destroy(gameObject);
         }
+    }
+    public void CeaseFire()
+    {
+        Destroy_ParticleSystem.Stop();
+        MuzzelFlash_ParticleSystem.Stop();
+        BulletShells_ParticleSystem.Stop();
+        Traser_ParticleSystem.Stop();
     }
 
    

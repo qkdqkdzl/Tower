@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,19 +19,95 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        Initialize();
-       
+        //UIManager.OnGameEndEvent += UIManager_OnGameEndEvent;
+        //UIManager.OnGameAgainEvent += UIManager_OnGameAgainEvent;
+        //Initialize();
+
+        StartCoroutine(SampleCor());
+    }
+
+    IEnumerator  SampleCor()
+    {
+        PlayA();
+        yield return new WaitForSeconds(3);
+        PlayB();
+        yield return new WaitForSeconds(3);
+        PlayC();
+        yield return new WaitForSeconds(3);
+
+        PlayD();
+        
 
     }
 
-    
+
+
+    private void PlayA()
+    {
+        Debug.Log("PlayA");
+    }
+
+    private void PlayB()
+    {
+        Debug.Log("PlayB");
+    }
+
+    private void PlayC()
+    {
+        Debug.Log("PlayC");
+    }
+
+    private void PlayD()
+    {
+        Debug.Log("PlayD");
+    }
+
+
+    private void UIManager_OnGameAgainEvent()
+    {
+        ClearBattleField();
+        Initialize();
+    }
+
+    void ClearBattleField()
+    {
+        int numChildren = battleField.transform.childCount;
+        for (int i = numChildren - 1; i > 0; i--)
+        {
+            GameObject.Destroy(battleField.transform.GetChild(i).gameObject);
+        }
+       
+    }
+
+    void CeaseFire()
+    {
+        GameObject[] targets = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach (GameObject enemy in targets)
+        {
+            enemy.GetComponent<Enemy>().CeaseFire();
+        }
+
+        targets = GameObject.FindGameObjectsWithTag("Turret");
+        foreach (GameObject obj in targets)
+        {
+            obj.GetComponent<Turret>().CeaseFire();
+        }
+    }
+
+   
+    private void UIManager_OnGameEndEvent()
+    {
+        CeaseFire();
+        ClearBattleField();
+    }
 
     void Initialize()
     {
         for (int i = 0; i < 5; i++)
         {
-            int xPos = UnityEngine.Random.Range(-20, 20);
-            int zPos = UnityEngine.Random.Range(-20, 20);
+            int xPos = Random.Range(-20, 20);
+            int zPos = Random.Range(-20, 20);
             Vector3 pos = new Vector3(xPos, 0, zPos);
             GameObject obj = Instantiate(enemyPrefab, pos, Quaternion.identity);
 
@@ -41,8 +118,8 @@ public class GameManager : MonoBehaviour
         }
         for (int i = 0; i < 5; i++)
         {
-            int xPos = UnityEngine.Random.Range(-20, 20);
-            int zPos = UnityEngine.Random.Range(-20, 20);
+            int xPos = Random.Range(-20, 20);
+            int zPos = Random.Range(-20, 20);
             Vector3 pos = new Vector3(xPos, 0, zPos);
             GameObject obj = Instantiate(turretPrefab, pos, Quaternion.identity);
 
@@ -74,8 +151,8 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < enemies.Length; i++)
         {
             enemies[i].Begin();
-            turrets[i].Begin();      
-            
+            turrets[i].Begin();    
+
         }
     }
     
@@ -96,8 +173,7 @@ public class GameManager : MonoBehaviour
             {
                
                 enemies[i].LoatAtTarget();
-                  
-
+                   // Prefare(turretObj);
             }
 
             for (int i = 0; i < enemies.Length; i++)
